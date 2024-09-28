@@ -33,6 +33,13 @@ To run the Elasticsearch-Filebeat-Kibana stack, follow these steps:
 
    ```bash
    docker-compose up -d
+   ```
+   
+## Accessing the Components
+Once the stack is running, you can access the different components using the following URLs:
+
+### Nginx: http://localhost
+### Kibana: http://localhost:5601
    
 # Images
 
