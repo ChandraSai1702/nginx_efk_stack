@@ -1,0 +1,19 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/access.log
+      - /var/log/nginx/error.log
+
+# Custom index name
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  index: "filebeat-nginx-%{+yyyy.MM.dd}"
+
+# Template settings
+setup.template.name: "filebeat-nginx"
+setup.template.pattern: "filebeat-nginx-*"
+
+setup.kibana:
+  host: "http://kibana:5601"
+

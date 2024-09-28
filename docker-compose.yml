@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+    networks:
+      - efk
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks:
+      - efk
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - efk
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.9.3
+    container_name: filebeat
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./nginx/logs:/var/log/nginx
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      SETUP_KIBANA_HOST: "http://kibana:5601"
+
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+
+networks:
+  efk:
+    driver: bridge
+
